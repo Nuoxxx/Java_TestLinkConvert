@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite id="" name="" >
+<node_order><![CDATA[]]></node_order>
+<details><![CDATA[]]></details> 
+<testsuite id="3" name="个人主页" >
+<node_order><![CDATA[1]]></node_order>
+<details><![CDATA[]]></details> 
+
+<testcase internalid="4" name="用户查看主播个人主页">
+	<node_order><![CDATA[1000]]></node_order>
+	<externalid><![CDATA[1]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[]]></summary>
+	<preconditions><![CDATA[]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[2]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[<div>
+	用户查看主播个人主页</div>
+<p>
+	&nbsp;</p>
+]]></actions>
+	<expectedresults><![CDATA[<p>
+	用户进入主播主页时，右上角显示的按钮为举报按钮</p>
+]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+
+<step>
+	<step_number><![CDATA[3]]></step_number>
+	<actions><![CDATA[<p>
+	用户点击举报按钮</p>
+]]></actions>
+	<expectedresults><![CDATA[<p>
+	用户点击举报后，界面跳转到举报页</p>
+]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[]]></value>
+	</custom_field>
+</custom_fields></testcase>
+
+<testcase internalid="107" name="这是123的用例标题">
+	<node_order><![CDATA[1001]]></node_order>
+	<externalid><![CDATA[22]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[<p>
+	summary</p>
+]]></summary>
+	<preconditions><![CDATA[<p>
+	preface</p>
+]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[2]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[<p>
+	步骤1</p>
+]]></actions>
+	<expectedresults><![CDATA[<p>
+	预期结果1</p>
+]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+</testsuite><testsuite id="309" name="表格3" >
+<node_order><![CDATA[4]]></node_order>
+<details><![CDATA[]]></details> 
+<testsuite id="310" name="表格3直播信息xml" >
+<node_order><![CDATA[5]]></node_order>
+<details><![CDATA[]]></details> 
+
+<testcase internalid="311" name="直播入口界面显示xml">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[73]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要</br>这里是摘要</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[安装App]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[2]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[点击logo]]></actions>
+	<expectedresults><![CDATA[弹出“视频直播”和“上传视频”选择界面，界面显示参考高保真，logo变成“X”]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[xxx]]></value>
+	</custom_field>
+</custom_fields></testcase>
+</testsuite></testsuite><testsuite id="314" name="直播" >
+<node_order><![CDATA[5]]></node_order>
+<details><![CDATA[]]></details> 
+<testsuite id="315" name="直播信息xml" >
+<node_order><![CDATA[1]]></node_order>
+<details><![CDATA[]]></details> 
+
+<testcase internalid="316" name="模块2用例名">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[74]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[子模块2预置条件]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[1]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[子模块2步骤]]></actions>
+	<expectedresults><![CDATA[子模块2预期结果]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+
+<step>
+	<step_number><![CDATA[2]]></step_number>
+	<actions><![CDATA[点击logo步骤2]]></actions>
+	<expectedresults><![CDATA[弹出“视频直播”和“上传视频”选择界面，界面显示参考高保真，logo变成“X”</br>这里是步骤2]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+
+<testcase internalid="320" name="这是同一个子模块下第二个用例4">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[75]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[第二个]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[3]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[第二个用例操作步骤4]]></actions>
+	<expectedresults><![CDATA[第二个用例预期结果4]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+
+<testcase internalid="323" name="用例名称3">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[76]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[3]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[用例名称3操作步骤3]]></actions>
+	<expectedresults><![CDATA[用例名称3预期结果]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[]]></value>
+	</custom_field>
+</custom_fields></testcase>
+</testsuite>
+<testcase internalid="333" name="直播入口界面显示xml7">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[79]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[第二个7]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[3]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[第二个用例操作步骤7]]></actions>
+	<expectedresults><![CDATA[第二个用例预期结果7]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+
+<step>
+	<step_number><![CDATA[2]]></step_number>
+	<actions><![CDATA[<p>
+	直播信息xml操作步骤2</p>
+]]></actions>
+	<expectedresults><![CDATA[<p>
+	直播信息xml预期结果2</p>
+]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+
+<testcase internalid="336" name="模块8用例名">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[80]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[子模块8预置条件]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[1]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[子模块8步骤]]></actions>
+	<expectedresults><![CDATA[子模块8预期结果]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+<testsuite id="326" name="子模块5" >
+<node_order><![CDATA[2]]></node_order>
+<details><![CDATA[]]></details> 
+
+<testcase internalid="327" name="模块2用例名5">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[77]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[2]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[1]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[子模块2步骤5]]></actions>
+	<expectedresults><![CDATA[子模块2预期结果5]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+
+<testcase internalid="330" name="直播入口界面显示xml6">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[78]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[安装App]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[2]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[点击logo步骤6]]></actions>
+	<expectedresults><![CDATA[弹出“视频直播”和“上传视频”选择界面，界面显示参考高保真，logo变成“X”6]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+</testsuite><testsuite id="339" name="子模块9" >
+<node_order><![CDATA[3]]></node_order>
+<details><![CDATA[]]></details> 
+
+<testcase internalid="340" name="模块9用例名">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[81]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>这里是摘要]]></summary>
+	<preconditions><![CDATA[子模块9预置条件]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[3]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[子模块9步骤]]></actions>
+	<expectedresults><![CDATA[子模块9预期结果]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+</testsuite><testsuite id="418" name="这里是新增模块" >
+<node_order><![CDATA[4]]></node_order>
+<details><![CDATA[]]></details> 
+
+<testcase internalid="419" name="新增模块用例名">
+	<node_order><![CDATA[1]]></node_order>
+	<externalid><![CDATA[100]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[</br>新增模块摘要]]></summary>
+	<preconditions><![CDATA[新增模块预置条件]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[0]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[新增模块操作步骤]]></actions>
+	<expectedresults><![CDATA[新增模块预期结果]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[徐雪霞]]></value>
+	</custom_field>
+</custom_fields></testcase>
+</testsuite></testsuite></testsuite>

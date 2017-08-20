@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite id="3" name="个人主页" >
+<node_order><![CDATA[1]]></node_order>
+<details><![CDATA[]]></details> 
+
+<testcase internalid="5" name="用户查看主播个人主页2">
+	<node_order><![CDATA[1000]]></node_order>
+	<externalid><![CDATA[dami-1]]></externalid>
+	<version><![CDATA[1]]></version>
+	<summary><![CDATA[]]></summary>
+	<preconditions><![CDATA[]]></preconditions>
+	<execution_type><![CDATA[1]]></execution_type>
+	<importance><![CDATA[2]]></importance>
+	<estimated_exec_duration></estimated_exec_duration>
+	<status>1</status>
+<steps>
+<step>
+	<step_number><![CDATA[1]]></step_number>
+	<actions><![CDATA[<div>
+用户查看主播个人主页</div>
+<p>
+&nbsp;</p>
+]]></actions>
+	<expectedresults><![CDATA[<p>
+用户进入主播主页时，右上角显示的按钮为举报按钮</p>
+]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+
+<step>
+	<step_number><![CDATA[2]]></step_number>
+	<actions><![CDATA[<p>
+用户点击举报按钮</p>
+]]></actions>
+	<expectedresults><![CDATA[<p>
+用户点击举报后，界面跳转到举报页</p>
+]]></expectedresults>
+	<execution_type><![CDATA[1]]></execution_type>
+</step>
+</steps>
+<custom_fields>
+	<custom_field>
+		<name><![CDATA[author]]></name>
+		<value><![CDATA[]]></value>
+	</custom_field>
+</custom_fields>
+</testcase>
+</testsuite>
