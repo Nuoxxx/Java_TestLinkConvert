@@ -25,7 +25,7 @@ import org.dom4j.io.SAXReader;
  * 
  * 以测试用例形式导出的xml，转换后的格式：用例名称、预置条件、操作步骤、预期结果、用例等级、摘要
  * 
- * @author Rachel.Luo
+ * 
  * */
 public class XmlToExcel {
 	private static List<String> title = new ArrayList<String>();

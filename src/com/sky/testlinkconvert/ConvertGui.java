@@ -26,44 +26,48 @@ import javax.swing.JTextField;
 
 /**
  * testlinkconvert的图形界面
- * @author Rachel.Luo
+ * Alt+shift+r 批量修改变量名
  * */
 public class ConvertGui implements ActionListener{
 	
-	JTextField ja1 = new DropDragSupportTextArea(20);
+	JTextField jtext = new DropDragSupportTextArea(20);
 	FileDialog fd = null;
 	JFrame jf = null;
-	JButton jb1 =null;
-	JButton jb2 = null;
-	JButton jb3 = null;
+	JButton jb_ChooseFile =null;
+	JButton jb_XmlToExcel = null;
+	JButton jb_ExcelToXml = null;
 	String oldfilename;
 	boolean isExcelToXml=false;
-	
+	//转换器界面布局
     public ConvertGui(){
     	jf = new JFrame("Testlink转换器");
     	fd = new FileDialog(jf);
-    	JPanel j1 = new JPanel();
-    	JPanel j2 = new JPanel();
-    	JLabel jl1 = new JLabel("源文件:");
+    	JPanel jp_file = new JPanel();
+    	JPanel jp_transfer_ype = new JPanel();
+    	JLabel jlable = new JLabel("源文件:");
+    	//三个按钮
+    	jb_ChooseFile = new JButton("选择");
+    	jb_XmlToExcel = new JButton("xml转成excel");
+    	jb_ExcelToXml = new JButton("excel转成xml");
+    	jb_ChooseFile.addActionListener(this);
+    	jb_XmlToExcel.addActionListener(this);
+    	jb_ExcelToXml.addActionListener(this);
+    	//上层JPanel 增加 “源文件”、“文件显示框”、“选择按钮”
+    	jp_file.add(jlable);
+    	jtext.setEditable(false);
+    	jtext.setBackground(Color.white);
+    	jtext.addActionListener(this);
+    	jp_file.add(jtext);
+    	jp_file.add(jb_ChooseFile);
+    	//下层JPanel 增加“xml转成Excel”、“Excel转成XML”按钮
+    	jb_XmlToExcel.setEnabled(false);
+    	jb_ExcelToXml.setEnabled(false);
+    	jp_transfer_ype.add(jb_XmlToExcel);
+    	jp_transfer_ype.add(jb_ExcelToXml);
     	
-    	jb1 = new JButton("选择");
-    	jb2 = new JButton("xml转成excel");
-    	jb3 = new JButton("excel转成xml");
-    	jb1.addActionListener(this);
-    	jb2.addActionListener(this);
-    	jb3.addActionListener(this);
-    	j1.add(jl1);
-    	ja1.setEditable(false);
-    	ja1.setBackground(Color.white);
-    	ja1.addActionListener(this);
-    	j1.add(ja1);
-    	j1.add(jb1);
-    	jb2.setEnabled(false);
-    	jb3.setEnabled(false);
-    	j2.add(jb2);
-    	j2.add(jb3);
-    	jf.add(j1,"North");
-    	jf.add(j2);
+    	//将以上两个JPanel加入JFrame中
+    	jf.add(jp_file,"North");
+    	jf.add(jp_transfer_ype);
 		jf.setLocation(300, 200);
     	jf.setVisible(true);
     	jf.pack();
@@ -82,30 +86,30 @@ public class ConvertGui implements ActionListener{
 			if(fd.getFile()!=null){
 				if(fd.getFile().endsWith(".xml")||fd.getFile().endsWith(".xls")
 						||fd.getFile().endsWith(".xlsx")){
-					ja1.setText(fd.getDirectory()+fd.getFile());
+					jtext.setText(fd.getDirectory()+fd.getFile());
 					oldfilename=fd.getDirectory()+fd.getFile();
 					
 					if(fd.getFile().endsWith(".xml")){
-						jb2.setEnabled(true);
-						jb3.setEnabled(false);
+						jb_XmlToExcel.setEnabled(true);
+						jb_ExcelToXml.setEnabled(false);
 						isExcelToXml=false;
-						jb2.setEnabled(false);
-						jb1.setEnabled(false);
-						new FileTransferTool(ja1,jb1,jb2,jb3,oldfilename,isExcelToXml).start();
+						jb_XmlToExcel.setEnabled(false);
+						jb_ChooseFile.setEnabled(false);
+						new FileTransferTool(jtext,jb_ChooseFile,jb_XmlToExcel,jb_ExcelToXml,oldfilename,isExcelToXml).start();
 					}else{
-						jb3.setEnabled(true);
-						jb2.setEnabled(false);
+						jb_ExcelToXml.setEnabled(true);
+						jb_XmlToExcel.setEnabled(false);
 						isExcelToXml=true;
-						jb3.setEnabled(false);
-						jb1.setEnabled(false);
-						new FileTransferTool(ja1,jb1,jb2,jb3,oldfilename,isExcelToXml).start();
+						jb_ExcelToXml.setEnabled(false);
+						jb_ChooseFile.setEnabled(false);
+						new FileTransferTool(jtext,jb_ChooseFile,jb_XmlToExcel,jb_ExcelToXml,oldfilename,isExcelToXml).start();
 					}
 				}else{
 					System.out.print(""+System.getProperties().getProperty("os.name"));
-					JOptionPane.showMessageDialog(ja1,"请重新选择xml或excel文件！");
-					ja1.setText("");
-					jb2.setEnabled(false);
-					jb3.setEnabled(false);
+					JOptionPane.showMessageDialog(jtext,"请重新选择xml或excel文件！");
+					jtext.setText("");
+					jb_XmlToExcel.setEnabled(false);
+					jb_ExcelToXml.setEnabled(false);
 				}
 			}
 		}else{
@@ -142,7 +146,7 @@ public class ConvertGui implements ActionListener{
 				  
 					if (files != null &&files.size() > 0){
 						String absolutePath = files.get(0).getAbsolutePath();
-						ja1.setText(absolutePath);					
+						jtext.setText(absolutePath);					
 					}
 					/*
 					for (int i = 0; i < files.size(); i++) {
@@ -172,33 +176,33 @@ public class ConvertGui implements ActionListener{
 			
 			System.out.println("drop");
 			System.out.println(fd.getFile());
-			if(ja1!=null){
+			if(jtext!=null){
 				System.out.println("开始");
-				if(ja1.getText().endsWith(".xml")||ja1.getText().endsWith(".xls")
-						||ja1.getText().endsWith(".xlsx")){
+				if(jtext.getText().endsWith(".xml")||jtext.getText().endsWith(".xls")
+						||jtext.getText().endsWith(".xlsx")){
 					//ja1.setText(fd.getDirectory()+fd.getFile());
 					//oldfilename=fd.getDirectory()+fd.getFile();
-					oldfilename = ja1.getText();
-					if(ja1.getText().endsWith(".xml")){
-						jb2.setEnabled(true);
-						jb3.setEnabled(false);
+					oldfilename = jtext.getText();
+					if(jtext.getText().endsWith(".xml")){
+						jb_XmlToExcel.setEnabled(true);
+						jb_ExcelToXml.setEnabled(false);
 						isExcelToXml=false;
-						jb2.setEnabled(false);
-						jb1.setEnabled(false);
-						new FileTransferTool(ja1,jb1,jb2,jb3,oldfilename,isExcelToXml).start();
+						jb_XmlToExcel.setEnabled(false);
+						jb_ChooseFile.setEnabled(false);
+						new FileTransferTool(jtext,jb_ChooseFile,jb_XmlToExcel,jb_ExcelToXml,oldfilename,isExcelToXml).start();
 					}else{
-						jb3.setEnabled(true);
-						jb2.setEnabled(false);
+						jb_ExcelToXml.setEnabled(true);
+						jb_XmlToExcel.setEnabled(false);
 						isExcelToXml=true;
-						jb3.setEnabled(false);
-						jb1.setEnabled(false);
-						new FileTransferTool(ja1,jb1,jb2,jb3,oldfilename,isExcelToXml).start();
+						jb_ExcelToXml.setEnabled(false);
+						jb_ChooseFile.setEnabled(false);
+						new FileTransferTool(jtext,jb_ChooseFile,jb_XmlToExcel,jb_ExcelToXml,oldfilename,isExcelToXml).start();
 					}
 				}else{
 					//获取电脑系统
 					System.out.print(""+System.getProperties().getProperty("os.name"));
-					JOptionPane.showMessageDialog(ja1,"请重新选择xml或excel文件！");
-					ja1.setText("");
+					JOptionPane.showMessageDialog(jtext,"请重新选择xml或excel文件！");
+					jtext.setText("");
 					//jb2.setEnabled(false);
 					//jb3.setEnabled(false);
 				}

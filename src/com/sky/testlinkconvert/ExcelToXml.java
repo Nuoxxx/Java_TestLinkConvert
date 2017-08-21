@@ -28,7 +28,7 @@ import org.dom4j.io.*;
  * 测试序号若有，必须位于第一列，其他额外列放在"预期结果"后，顺序随意；
  * []括起的列，除了用例等级，其他的信息都将导入到testlink中用例的"摘要"信息中。
  * 
- * @author Rachel.Luo
+ *
  */
 public class ExcelToXml {
 	private static int internalid = 1000001;
@@ -74,13 +74,15 @@ public class ExcelToXml {
 				modules.clear();
 				titles.clear();
 				extracols.clear();
-
+				//得到Excel工作表对象
 				xssheet = xswb.getSheetAt(sheetNum);
 				time = System.currentTimeMillis();
-
+				//获取工作表的名字作为模块名
 				modulesString = xssheet.getSheetName();
+				System.out.println("表格名：" + modulesString);
+				//用模块名作为生成的XML文件名
 				newfilename = getXmlName(oldfilename, time, modulesString);
-				System.out.println("表格名" + modulesString);
+				
 
 				List<String> caseatrs;
 				List<String> sm_caseatrs = new ArrayList<String>();
@@ -90,8 +92,9 @@ public class ExcelToXml {
 				int totalRow = xssheet.getLastRowNum();
 				System.out.println("totalRow91:" + totalRow);
 
-				// 获取标题行的列数
+				// 获取标题行
 				XSSFRow xsrow0 = xssheet.getRow(0);
+				// 获取标题行的列数
 				totalCol = xsrow0.getLastCellNum();
 				// 将列标题保存起来
 				for (int r = 0; r < totalCol; r++) {
@@ -100,7 +103,6 @@ public class ExcelToXml {
 				yq_index = titles.indexOf("预期结果");
 
 				// //删除文档最后的空行
-
 				for (int i = totalRow; i > 1; i--) {
 					System.out.println("i:" + i);
 
@@ -122,7 +124,7 @@ public class ExcelToXml {
 					}
 				}
 
-				System.out.println("总行数：" + totalRow);
+				System.out.println("删除文档最后空行后总行数：" + totalRow);
 				// 若预期结果不是最后一列，则有额外列，保存额外列名称
 				for (int cn = yq_index + 1; cn < totalCol; cn++) {
 					extracols.add(xsrow0.getCell(cn).getStringCellValue());
@@ -137,20 +139,21 @@ public class ExcelToXml {
 				// 处理子模块数据
 				for (int i = 1; i <= totalRow; i++) {
 					// 增加一个空行，为了和Excel中的title行对应
-					XSSFCell moduleSet = xssheet.getRow(i).getCell(0);
-					System.out.println("moduleSet:" + moduleSet);
-					if (moduleSet != null && !moduleSet.equals("")) {
-						if (isMergedRegion(xssheet, moduleSet)) {
+					XSSFCell s_module = xssheet.getRow(i).getCell(0);
+					System.out.println("s_module:" + s_module);
+					if (s_module != null && !s_module.equals("")) {
+						if (isMergedRegion(xssheet, s_module)) {
 
-							int moduleMergeRow = mergedRow(xssheet, moduleSet);
-							String moduleNameString = getCellContent(moduleSet);
+							int moduleMergeRow = mergedRow(xssheet, s_module);
+//							String moduleNameString = getCellContent(s_module);
 							for (int k = 0; k < moduleMergeRow + 1; k++) {
-								sm_caseatrs.add(moduleNameString);
+//								sm_caseatrs.add(moduleNameString);
+								sm_caseatrs.add(replaceCellAngleBrackets(s_module.getStringCellValue()));
 								System.out.println("为合并单元格设置数据");
 							}
 							i = i + moduleMergeRow;
 						} else {
-							sm_caseatrs.add(replaceCellAngleBrackets(moduleSet.getStringCellValue()));
+							sm_caseatrs.add(replaceCellAngleBrackets(s_module.getStringCellValue()));
 						}
 					} else {
 						sm_caseatrs.add("");
