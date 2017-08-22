@@ -33,7 +33,7 @@ import org.dom4j.io.*;
 public class ExcelToXml {
 	private static int internalid = 1000001;
 	private static int suite_node = 1;
-	private static List<String> modules = new ArrayList<String>(); // 保存：模块名+"/"+子模块名，重复只保存一次
+	private static List<String> s_modules = new ArrayList<String>(); // 保存：子模块名，重复只保存一次
 	// excel模板支持4个/6个固定列，及多个随机列；extracols不为empty，信息计入摘要中
 	private static List<String> titles = new ArrayList<String>(); // 放所有列名称
 	private static List<String> extracols = new ArrayList<String>(); // 放额外的标题名称
@@ -54,7 +54,7 @@ public class ExcelToXml {
 		// 初始化static属性值
 		internalid = 1000001;
 		suite_node = 1;
-		modules.clear();
+		s_modules.clear();
 		titles.clear();
 		extracols.clear();
 
@@ -71,7 +71,7 @@ public class ExcelToXml {
 
 			for (int sheetNum = 0; sheetNum < xswb.getNumberOfSheets(); sheetNum++) {
 				// 清空很重要，不然后面的页签会出现多个摘要
-				modules.clear();
+				s_modules.clear();
 				titles.clear();
 				extracols.clear();
 				//得到Excel工作表对象
@@ -269,7 +269,7 @@ public class ExcelToXml {
 				// 不同的表格对应不同的xml文件
 				for (int sheetNum = 0; sheetNum < hswb.getNumberOfSheets(); sheetNum++) {
 
-					modules.clear();
+					s_modules.clear();
 					titles.clear();
 					extracols.clear();
 
@@ -455,6 +455,7 @@ public class ExcelToXml {
 		System.out.println("开始写xml");
 		try {
 			XMLWriter writer = null;// 声明写XML的对象
+			//SAXReader(Stream API for XML)把XML文档作为一个流来处理
 			SAXReader reader = new SAXReader();
 			Document document = null;
 
@@ -463,8 +464,12 @@ public class ExcelToXml {
 			format.setEncoding("UTF-8");// 设置XML文件的编码格式
 
 			File file = new File(newfilename);
-
-			if (file.exists()) { // 读取存在的testcase.xml文件，并追加测试用例
+			/*判断文件是否存在
+			 * 1:存在，追加测试用例
+			 * 2.不存在，新建文件并追加测试用例
+			 */
+			if (file.exists()) { 
+				// 读取存在的testcase.xml文件，并追加测试用例
 				// document = reader.read(file); // 读取XML文件
 				// 之前直接生成Jar包会出故障
 				document = reader.read(new BufferedReader(new InputStreamReader(new FileInputStream(file))));
@@ -480,27 +485,23 @@ public class ExcelToXml {
 						// 排除空数据
 					if (caseatrs.get(yq_index) != null && !caseatrs.get(yq_index).equals("")) {
 						if (!caseatrs.get(sm_index).equals("")) {
-							String module = caseatrs.get(sm_index);
-							System.out.println("module值:" + module);
+							String s_module = caseatrs.get(sm_index);
+							System.out.println("子模块值:" + s_module);
 							// 子模块名都已有对应的测试套件
-							if (modules.contains(module)) {
+							if (s_modules.contains(s_module)) {
 								System.out.println("已经包含该子模块");
 								// 获取已有测试套件，并添加测试用例
-								Element element = getTestsuiteByModule(root, module);
+								Element element = getTestsuiteByModule(root, s_module);
 								// 添加测试用例
 								// 打印modules中的值
-								for (int m = 0; m < modules.size(); m++) {
-									System.out.println("modules中的值：" + modules.get(m));
+								for (int m = 0; m < s_modules.size(); m++) {
+									System.out.println("modules中的值：" + s_modules.get(m));
 								}
 
 								System.out.println("已包含模块，直接添加用例" + element.toString());
 								addTestCase(element, caseatrs);
 							} else { // 模块名已有对应的测试套件
-								System.out.println("添加新模块'");
-								// 获取已有父测试套件，新建子测试套件，再添加测试用例
-								// Element element = getTestsuiteByModule(root,
-								// caseatrs.get(m_index));
-								// 新建子测试套件
+								System.out.println("添加新模块");
 								Element sub_testsuite = root.addElement("testsuite");
 								sub_testsuite.addAttribute("name", caseatrs.get(sm_index));
 								Element sub_node = sub_testsuite.addElement("node_order");
@@ -511,11 +512,11 @@ public class ExcelToXml {
 								// 在子测试套件下添加测试用例
 								addTestCase(sub_testsuite, caseatrs);
 								// 保存新建模块
-								modules.add(module);
+								s_modules.add(s_module);
 							}
 
 						} else if (caseatrs.get(sm_index).equals("")) {
-							// 模块和子模块列均无值，不建测试套件，直接添加测试用例
+							// 子模块列无值，不建测试套件，直接添加测试用例
 							System.out.println("直接添加testcase");
 							addTestCase(root, caseatrs);
 
@@ -537,21 +538,30 @@ public class ExcelToXml {
 				if (yq_index - 4 < 0) {
 					addTestCase(root, caseatrs);
 
-				} else {// 有子模块列
+				} else {
+					// 有子模块列
+					/* 子模块是否有值：
+					 * 1.有值，子模块列写入XML
+					 * 2.无值，直接添加测试用例
+					 */					
 					if (!caseatrs.get(sm_index).equals("")) {
 						System.out.println("有子模块列");
-						String module = caseatrs.get(sm_index);
+						//获取子模块名,添加子模块信息  eg.<testsuite name="直播信息xml"> 
+						String s_module = caseatrs.get(sm_index);
 						Element sub_testsuite = root.addElement("testsuite");
 						sub_testsuite.addAttribute("name", caseatrs.get(sm_index));
+						//
 						Element sub_node = sub_testsuite.addElement("node_order");
+						//suite_node对应？？
 						sub_node.setText("<![CDATA[" + suite_node + "]]>");
 						Element sub_details = sub_testsuite.addElement("details");
 						sub_details.setText("<![CDATA[]]>");
 						suite_node++;
+						
 						// 在子测试套件下添加测试用例
 						addTestCase(sub_testsuite, caseatrs);
 						// 保存新建模块
-						modules.add(module);
+						s_modules.add(s_module);
 					} else if (caseatrs.get(sm_index).equals("")) {
 						// 子模块无值，不建测试套件，直接添加测试用例
 						addTestCase(root, caseatrs);
@@ -608,24 +618,16 @@ public class ExcelToXml {
 		return child_element;
 	}
 
-	// 假如sub_module改变:传递module；否则，传递module+"/"+sub_module
+	//返回子模块对应的testsuite
 	private static Element getTestsuiteByModule(Element root, String module) {
 		Element testSuite = null;
-		// String[] suites = module.split("/");
-		// int num = 0;
+		//遍历根目录下所有testsuite（子模块）
 		Iterator<Element> it = root.elementIterator("testsuite");
 
 		while (it.hasNext()) {
 			Element element = it.next();
 			if (element.attributeValue("name").equals(module)) {
-				// num++;
-				// if(num==suites.length){
 				testSuite = element;
-				// break;
-				// }else{
-				// it=element.elementIterator("testsuite");
-				// }
-
 			}
 		}
 		return testSuite;
@@ -651,17 +653,19 @@ public class ExcelToXml {
 				System.out.println("col:" + col);
 				sumStr.append("</br>");
 				sumStr.append(caseatrs.get(extracols.indexOf(col) + yq_index + 1).replaceAll("\n", "</br>"));
+				System.out.println("摘要append:" + caseatrs.get(extracols.indexOf(col) + yq_index + 1).replaceAll("\n", "</br>"));
 			}
 			// else if(!col.equals("用例等级")){
 			// sumStr.append("</br>");
 			// sumStr.append(col+"："+caseatrs.get(extracols.indexOf(col)+yq_index+1));
 			// }
 		}
-		// System.out.println("sumStr:"+sumStr.toString());
+		System.out.println("sumStr:"+sumStr.toString());
 		summary.setText("<![CDATA[" + sumStr.toString() + "]]>");
 
 		Element preconditions = testcase.addElement("preconditions");
 		preconditions.setText("<![CDATA[" + caseatrs.get(yq_index - 2).replaceAll("\n", "</br>") + "]]>");
+		//执行方式：0：自动化测试；1：手工测试；
 		Element execution_type = testcase.addElement("execution_type");
 		execution_type.setText("<![CDATA[1]]>");
 
@@ -682,17 +686,20 @@ public class ExcelToXml {
 		}
 
 		Element steps = testcase.addElement("steps");
-		System.out.println("caseatrs.size()" + caseatrs.size());
+		System.out.println("caseatrs.size()：" + caseatrs.size());
+		//通过list长度和表格的列相除，对应添加多步骤
 		int stepNumber = caseatrs.size() / totalCol;
-		System.out.println("stepNumber" + stepNumber);
+		System.out.println("stepNumber：" + stepNumber);
 		for (int i = 0; i < stepNumber; i++) {
 			Element step = steps.addElement("step");
+			//第几步
 			Element step_number = step.addElement("step_number");
 			step_number.setText("<![CDATA[" + (i + 1) + "]]>");
+			//操作步骤
 			Element actions = step.addElement("actions");
-			// 预期结果和操作步骤还需
 			actions.setText(
 					"<![CDATA[" + caseatrs.get((yq_index - 1) + totalCol * i).replaceAll("\n", "</br>") + "]]>");
+			//操作结果
 			Element expectedresults = step.addElement("expectedresults");
 			expectedresults
 					.setText("<![CDATA[" + caseatrs.get(yq_index + totalCol * i).replaceAll("\n", "</br>") + "]]>");
