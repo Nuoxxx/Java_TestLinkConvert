@@ -62,7 +62,7 @@ public class XmlToExcel {
 		try {
 			doc = reader.read(f);
 			root = doc.getRootElement();
-			System.out.println("root的值" + root);
+			System.out.println("root的值:" + root.getName());
 
 			if (root.getName().equals("testcases")) {// 当根节点是testcases，不输出模块和子模块
 				forEachElement(root, newfilename);
@@ -99,6 +99,7 @@ public class XmlToExcel {
 		for (Iterator it = element.elementIterator(); it.hasNext();) {
 			Element subelement = (Element) it.next();
 			String text = subelement.getName();
+			System.out.println("subelement.getName():"+text);
 
 			// 若是testsuite节点，递归遍历每一个节点，直至testcase节点
 			if (text.equals("testsuite")) {
@@ -108,20 +109,24 @@ public class XmlToExcel {
 			} else if (text.equals("testcase")) {
 				System.out.println("这里是testcase节点");
 				if (title.size() == 6) {// 不输出模块和子模块
+					//最终subelment中存的是testcase
+					System.out.println("subelement:"+subelement);
 					testcase = parseTestCaseTag(subelement, null, null);
 
 				} else {// 否则要输出模块和子模块 （测试用例不可能建在项目下面）
 					/**
-					 * element为测试用例的直属父节点； 若测试用例的直属父节点为根节点（套件名），模块为根节点，子模块为""；
+					 * element为测试用例的直属父节点；
+					 * 若测试用例的直属父节点为根节点（套件名），模块为根节点，子模块为""；
 					 * 若测试用例的直属父节点为根节点（项目名）的子节点，模块为直属父节点名，子模块为""；
 					 * 其他情况，直属父节点名为子模块；
 					 * */
 					// 模块和子模块的特殊处理
 					String rootname = root.attributeValue("name");
 					System.out.println("rootname：" + rootname.toString());// 打印出来的是空的数据
+					System.out.println("元素："+element.attributeValue("name"));
 					Element sup_element = element.getParent(); // 用例的直属父节点的父节点
 					System.out
-							.println("用例的直属父节点的父节点：" + sup_element.toString());
+							.println("用例的直属父节点的父节点：" + sup_element.attributeValue("name"));
 					// element是根节点且根节点不为空
 					if (element.equals(root) && !rootname.equals("")) {
 						System.out.println("element是根节点且根节点不为空");
@@ -130,9 +135,10 @@ public class XmlToExcel {
 
 					} else if (sup_element.equals(root)
 							&& sup_element.attributeValue("name").equals("")) {
-						//
+						//-----------------模板中对应的情况---------------------
 						System.out.println("如果父节点是根节点且根节点的属性值是空");
 						if (ppelement == null) { // 初次赋值
+							// ppelement = root
 							ppelement = sup_element;
 						}
 						module_name = element.attributeValue("name");
@@ -160,10 +166,12 @@ public class XmlToExcel {
 						}
 					}
 					// testcase中不包含module_name
+					System.out.println("subelement:"+subelement.attributeValue("name"));
 					testcase = parseTestCaseTag(subelement, module_name,
 							sub_module_name);
 				}
 				// 将用例写入Excel中
+				System.out.println("开始写入Excel");
 				writeExcelByLine(newfilename, testcase, module_name);
 			}
 
@@ -193,7 +201,7 @@ public class XmlToExcel {
 		return temp.toString();
 	}
 
-	// 从<testcase>标签中解析用例各字段信息，并保存到List中 , 注： subelement为<testcase>
+	// 从<testcase>标签中解析用例各字段信息，并保存到List中 
 	private static List<String> parseTestCaseTag(Element subelement,
 			String module_name, String sub_module_name) {
 		List<String> testcase = new ArrayList<String>();

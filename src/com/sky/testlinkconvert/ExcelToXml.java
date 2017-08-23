@@ -252,7 +252,7 @@ public class ExcelToXml {
 					}
 
 				}
-				// 将临时文件的内容重新写到最终的xml文件中
+				// 读完一张表中内容，将临时文件的内容重新写到最终的xml文件中
 				replaceESC(tempfile, newfilename);
 
 			}
