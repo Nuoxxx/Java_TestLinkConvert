@@ -12,6 +12,7 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -26,7 +27,7 @@ import org.dom4j.io.SAXReader;
  * 以测试用例形式导出的xml，转换后的格式：用例名称、预置条件、操作步骤、预期结果、用例等级、摘要
  * 
  * 
- * */
+ */
 public class XmlToExcel {
 	private static List<String> title = new ArrayList<String>();
 	private static WritableWorkbook wwb;
@@ -34,7 +35,7 @@ public class XmlToExcel {
 	private static Element root;
 	private static String module_name = null; // 每个用例的模块
 	private static String sub_module_name = null; // 每个用例的子模块
-	private static Element ppelement = null; // 用例的直属父节点的父节点
+	// private static Element ppelement = null; // 用例的直属父节点的父节点
 
 	public static void transferXMLToExcel(String oldfilename) {
 		long time = System.currentTimeMillis();
@@ -46,7 +47,7 @@ public class XmlToExcel {
 		// 初始化static属性
 		module_name = null;
 		sub_module_name = null;
-		ppelement = null;
+		// ppelement = null;
 
 		// 添加固定会导出的列标题
 		title.add("用例名称");
@@ -56,7 +57,7 @@ public class XmlToExcel {
 		title.add("用例等级");
 		title.add("作者");
 		title.add("摘要");
-
+		// Stream API for XML
 		SAXReader reader = new SAXReader();
 		Document doc;
 		try {
@@ -64,13 +65,14 @@ public class XmlToExcel {
 			root = doc.getRootElement();
 			System.out.println("root的值:" + root.getName());
 
-			if (root.getName().equals("testcases")) {// 当根节点是testcases，不输出模块和子模块
+			if (root.getName().equals("testcases")) {// 当根节点是testcases，不输出子模块
 				forEachElement(root, newfilename);
 
-			} else if (root.getName().equals("testsuite")) {// 当根节点是testsuites，需要输出模块和子模块
+			} else if (root.getName().equals("testsuite")) {// 当根节点是testsuites，需要输出子模块
 				title.add(0, "子模块");
 				// title.add(0, "模块");
-
+				//
+				testforEachElement(root, newfilename,0);
 				forEachElement(root, newfilename);
 			}
 			title.clear();
@@ -83,6 +85,27 @@ public class XmlToExcel {
 		}
 	}
 
+	private static void testforEachElement(Element element, String newfilename,int count) throws Exception {
+		// 测试用
+		int countA = count;
+		int countB = 0;
+		for (Iterator it = element.elementIterator(); it.hasNext();) {
+			Element test_subelement = (Element) it.next();
+			String test_text = test_subelement.getName();
+			System.out.println("数据:" + test_text);
+
+			// 若是testsuite节点，递归遍历每一个节点，直至testcase节点
+			if (test_text.equals("testsuite")) {
+				System.out.println("testsuite：countA："+countA+":countB："+countB++);
+				testforEachElement(test_subelement, newfilename,countA++);
+
+			} else if (test_text.equals("testcase")) {
+				System.out.println("testcase节点：countA："+countA+":countB："+countB++);
+
+			}
+		}
+	}
+
 	/**
 	 * 遍历根节点下的所有节点，寻找testsuite和testcase节点；
 	 * 对于testcase节点，读取用例的"用例名称","用例等级","预置条件","操作步骤","预期输出","摘要"等值；并写入excel表格中。
@@ -91,15 +114,15 @@ public class XmlToExcel {
 	 * testcase的非直属套件的name全部以"/"连接起来，导出作为模块名 用例直接所属testsuite节点的name属性，导出作为子模块名
 	 * 
 	 * @throws Exception
-	 * */
-	private static void forEachElement(Element element, String newfilename)
-			throws Exception {
+	 */
+	private static void forEachElement(Element element, String newfilename) throws Exception {
 		List<String> testcase = null;
 
+		// elementIterator()方法获取是该节点的子节点；子节点的子节点并不获取
 		for (Iterator it = element.elementIterator(); it.hasNext();) {
 			Element subelement = (Element) it.next();
 			String text = subelement.getName();
-			System.out.println("subelement.getName():"+text);
+			System.out.println("subelement.getName():" + text);
 
 			// 若是testsuite节点，递归遍历每一个节点，直至testcase节点
 			if (text.equals("testsuite")) {
@@ -108,67 +131,50 @@ public class XmlToExcel {
 
 			} else if (text.equals("testcase")) {
 				System.out.println("这里是testcase节点");
-				if (title.size() == 6) {// 不输出模块和子模块
-					//最终subelment中存的是testcase
-					System.out.println("subelement:"+subelement);
-					testcase = parseTestCaseTag(subelement, null, null);
+				if (title.size() == 6) {// 不输出子模块
+					// 最终subelment中存的是testcase
+					System.out.println("subelement:" + subelement);
+					testcase = parseTestCaseTag(subelement, null);
 
-				} else {// 否则要输出模块和子模块 （测试用例不可能建在项目下面）
+				} else {// 获取模块和子模块名
 					/**
-					 * element为测试用例的直属父节点；
-					 * 若测试用例的直属父节点为根节点（套件名），模块为根节点，子模块为""；
+					 * element为测试用例的直属父节点； 若测试用例的直属父节点为根节点（套件名），模块为根节点，子模块为""；
 					 * 若测试用例的直属父节点为根节点（项目名）的子节点，模块为直属父节点名，子模块为""；
 					 * 其他情况，直属父节点名为子模块；
-					 * */
-					// 模块和子模块的特殊处理
+					 */
+					// 子模块的特殊处理
 					String rootname = root.attributeValue("name");
 					System.out.println("rootname：" + rootname.toString());// 打印出来的是空的数据
-					System.out.println("元素："+element.attributeValue("name"));
+					// elment对应的是testcase的上一层testsuite
+					System.out.println("元素：" + element.attributeValue("name"));
 					Element sup_element = element.getParent(); // 用例的直属父节点的父节点
-					System.out
-							.println("用例的直属父节点的父节点：" + sup_element.attributeValue("name"));
+					System.out.println("用例的直属父节点的父节点：" + sup_element.attributeValue("name"));
 					// element是根节点且根节点不为空
 					if (element.equals(root) && !rootname.equals("")) {
 						System.out.println("element是根节点且根节点不为空");
 						module_name = rootname;
 						sub_module_name = "";
 
-					} else if (sup_element.equals(root)
-							&& sup_element.attributeValue("name").equals("")) {
-						//-----------------模板中对应的情况---------------------
-						System.out.println("如果父节点是根节点且根节点的属性值是空");
-						if (ppelement == null) { // 初次赋值
-							// ppelement = root
-							ppelement = sup_element;
-						}
-						module_name = element.attributeValue("name");
+					} else if (sup_element.equals(root) && sup_element.attributeValue("name").equals("")) {
+						// -----------------模板中对应的情况---------------------
+						System.out.println("父节点是根节点且根节点的属性值是空,表明没有子模块");
+						// 此时element对应的是模块名
 						sub_module_name = "";
+						module_name = element.attributeValue("name");
+
 					} else {// 模块和子模块的普通处理
 						System.out.println("获取子模块名");
+						// 此时element对应的是子模块名
 						sub_module_name = element.attributeValue("name"); // 实时获取每个用例的直属父节点名
+						module_name = sup_element.attributeValue("name");
 
-						/**
-						 * 保存或更新上一个testcase的直属父节点的父节点，
-						 * 第一个testcase的模块名，根据直属父节点的父节点逆向追溯到根节点，保存其模块名；
-						 * 当前testcase的直属父节点的父节点与之相同，说明模块相同，模块不改变；
-						 * 否则逆向追溯到根节点，更新模块名；
-						 * */
-						if (ppelement == null) { // 初次赋值
-							ppelement = sup_element;
-						}
-						if (module_name == null) { // 初次赋值
-							module_name = getModuleName(sup_element);
-						}
-						// 当前testcase的直属父节点的父节点与之前的不相同，更新保存ppelement和module_name
-						if (!sup_element.equals(ppelement)) {
-							module_name = getModuleName(sup_element);
-							ppelement = sup_element;
-						}
 					}
 					// testcase中不包含module_name
-					System.out.println("subelement:"+subelement.attributeValue("name"));
-					testcase = parseTestCaseTag(subelement, module_name,
-							sub_module_name);
+					System.out.println("subelement:testcase" + subelement.attributeValue("name"));
+					System.out.println("sub_module_name:" + sub_module_name + "  ,module_name:" + module_name);
+
+					// 将子模块加入到testcase列表中
+					testcase = parseTestCaseTag(subelement, sub_module_name);
 				}
 				// 将用例写入Excel中
 				System.out.println("开始写入Excel");
@@ -201,9 +207,8 @@ public class XmlToExcel {
 		return temp.toString();
 	}
 
-	// 从<testcase>标签中解析用例各字段信息，并保存到List中 
-	private static List<String> parseTestCaseTag(Element subelement,
-			String module_name, String sub_module_name) {
+	// 从<testcase>标签中解析用例各字段信息，并保存到List中
+	private static List<String> parseTestCaseTag(Element subelement, String sub_module_name) {
 		List<String> testcase = new ArrayList<String>();
 
 		// 获取操作步骤和预期输出，并保存
@@ -213,8 +218,8 @@ public class XmlToExcel {
 			StringBuffer actions = new StringBuffer();
 			StringBuffer expectedresults = new StringBuffer();
 			for (int i = 0; i < step.size(); i++) {
-				// 添加模块和子模块
-				if (module_name != null && sub_module_name != null) {
+				// 添加子模块
+				if (sub_module_name != null) {
 					// testcase.add(replace(module_name));
 					testcase.add(replace(sub_module_name));
 				}
@@ -242,8 +247,7 @@ public class XmlToExcel {
 				// 作者
 				Element custom_fields = subelement.element("custom_fields");
 				if (custom_fields != null) {
-					List<Element> custom_field = custom_fields
-							.elements("custom_field");
+					List<Element> custom_field = custom_fields.elements("custom_field");
 					StringBuffer author = new StringBuffer();
 					author.append(custom_field.get(0).elementText("value"));
 					testcase.add(replace(author.toString()));
@@ -267,8 +271,8 @@ public class XmlToExcel {
 	}
 
 	// 一行一行的将测试用例写入excel表中
-	private static void writeExcelByLine(String newfilename,
-			List<String> testcase, String moduleName) throws Exception {
+	private static void writeExcelByLine(String newfilename, List<String> testcase, String moduleName)
+			throws Exception {
 		File file = new File(newfilename);
 		// 保存sub_module信息，用于合并单元格
 		String sModule = "";
@@ -286,12 +290,13 @@ public class XmlToExcel {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			// 将标题写到表格中
 			for (int i = 0; i < title.size(); i++) {
 				Label label0 = new Label(i, 0, title.get(i));
 				ws.addCell(label0);
 
 			}
-
+			// 获取步骤数，决定写几行
 			int step = (testcase.size() + 1) / title.size();
 			System.out.println("步骤数：" + step);
 
@@ -301,8 +306,7 @@ public class XmlToExcel {
 
 			for (int j = 0; j < step; j++) {
 				for (int i = 0; i < title.size(); i++) {
-					Label label = new Label(i, 1 + j, testcase.get(i + j
-							* title.size()));
+					Label label = new Label(i, 1 + j, testcase.get(i + j * title.size()));
 					ws.addCell(label);
 
 				}
@@ -355,8 +359,7 @@ public class XmlToExcel {
 
 			for (int j = 0; j < step; j++) {
 				for (int i = 0; i < title.size(); i++) {
-					Label label = new Label(i, num + j, testcase.get(i + j
-							* title.size()));
+					Label label = new Label(i, num + j, testcase.get(i + j * title.size()));
 					ws.addCell(label);
 
 				}
@@ -373,11 +376,9 @@ public class XmlToExcel {
 	private static String getExcelName(String oldfilename, long time) {
 		String newfilename = "";
 		String[] temp = oldfilename.split("\\\\");
-		String prename = temp[temp.length - 1].substring(0,
-				temp[temp.length - 1].length() - 4);
-		newfilename = oldfilename.substring(0, oldfilename.length()
-				- temp[temp.length - 1].length())
-				+ "Excel_" + prename + "_" + time + ".xls";
+		String prename = temp[temp.length - 1].substring(0, temp[temp.length - 1].length() - 4);
+		newfilename = oldfilename.substring(0, oldfilename.length() - temp[temp.length - 1].length()) + "Excel_"
+				+ prename + "_" + time + ".xls";
 
 		return newfilename;
 	}
