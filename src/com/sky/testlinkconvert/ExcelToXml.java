@@ -501,7 +501,7 @@ public class ExcelToXml {
 								System.out.println("已包含模块，直接添加用例" + element.toString());
 								addTestCase(element, caseatrs);
 							} else { // 子模块中没有对应的测试套件
-								System.out.println("添加新模块");
+								System.out.println("添加新子模块");
 								Element sub_testsuite = root.addElement("testsuite");
 								sub_testsuite.addAttribute("name", caseatrs.get(sm_index));
 								Element sub_node = sub_testsuite.addElement("node_order");
