@@ -141,7 +141,15 @@ public class ExcelToXml {
 					// 增加一个空行，为了和Excel中的title行对应
 					XSSFCell s_module = xssheet.getRow(i).getCell(0);
 					System.out.println("s_module:" + s_module);
+					/*判断单元格是否有内容：
+					 * 1.有内容则判断是否为合并单元格；
+					 * 2.无内容，则为子模块列表加入“”
+					 */
 					if (s_module != null && !s_module.equals("")) {
+						/*判断子模块是否合并单元格：
+						*1.是，则需要为多个合并的单元格赋值；
+						*2.不是，则将该子模块直接加入sm_caseatrs中
+						**/
 						if (isMergedRegion(xssheet, s_module)) {
 
 							int moduleMergeRow = mergedRow(xssheet, s_module);
@@ -149,7 +157,7 @@ public class ExcelToXml {
 							for (int k = 0; k < moduleMergeRow + 1; k++) {
 //								sm_caseatrs.add(moduleNameString);
 								sm_caseatrs.add(replaceCellAngleBrackets(s_module.getStringCellValue()));
-								System.out.println("为合并单元格设置数据");
+								System.out.println("为子模块合并单元格设置数据");
 							}
 							i = i + moduleMergeRow;
 						} else {
@@ -176,23 +184,28 @@ public class ExcelToXml {
 					for (int col = 1; col < totalCol; col++) {
 						XSSFCell temp = xssheet.getRow(row).getCell(col);
 						System.out.println("XSSFCell temp:"+temp);
-						// 判断是否是用例名合并单元格
-
+						/* 判断是否合并单元格（先判断用例标题，若标题为合并单元格，则多行数据放在caseatrs中；
+						 * 不会出现在用例标题为单元格，后续列表为合并单元格的情况）:
+						 * 1. 是，清空caseatrs中内容，按照合并标题单元格行数，添加多行数据；
+						 * 2. 不是，则正常添加一行数据，若内容为空则加入“”；
+						 */
+						// 若在中间比如“预置条件”看到合并单元格，则该用例标题必定为合并单元格
 						if (temp != null && !temp.equals("") && isMergedRegion(xssheet, temp)) {
 							// 自己写的，获取合并单元格的总数
 							System.out.println("合并单元格的数量:" + xssheet.getNumMergedRegions());
-							// 获取合并单元格行数
+							// 获取用例标题合并单元格行数
 							int mergedRowNum = mergedRow(xssheet, temp);
 							System.out.println("mergedRowNum:"+mergedRowNum);
 							caseatrs.clear();
-
+							//如果有多个操作步骤，则用例标题为合并单元格，此时caseatrs中包含多行的数据；
 							for (int r = 0; r < mergedRowNum + 1; r++) {
+								
 								caseatrs.add(sm_caseatrs.get(row));
+								//测试标题及后面的内容若出现合并单元格，caseatrs中只增加一次，其他时候加入“”
 								for (int k = 1; k < totalCol; k++) {
 									XSSFCell mergedTempCell = xssheet.getRow(row + r).getCell(k);
 									System.out.println("mergedTempCell:"+mergedTempCell);
 									// 将数据增加到caseatrs中
-
 									if (mergedTempCell != null && !mergedTempCell.equals("")) {
 										if (mergedTempCell.getCellType() == mergedTempCell.CELL_TYPE_NUMERIC) {
 											DecimalFormat df = new DecimalFormat("###0");
@@ -231,7 +244,8 @@ public class ExcelToXml {
 						System.out.println("caseatrs中的数据：" + caseatrs.get(i));
 					}
 
-					// 先写到临时xml文件中,创建临时文件所在目录，再完成临时文件的赋值
+					// 取出一个用例的内容，先写到临时xml文件中
+					// 创建临时文件所在目录，再完成临时文件的赋值
 					File temp = new File("c:");
 					if (temp.exists()) {// 有c盘
 						if (!new File("c:\\temp").exists()) {
@@ -728,6 +742,7 @@ public class ExcelToXml {
 			newfilename = oldfilename.substring(0, oldfilename.length() - temp[temp.length - 1].length()) + "TestCase_"
 					+ SheetName + "_" + time + ".xml";
 		}
+		System.out.println("getXmlName:"+newfilename);
 		return newfilename;
 	}
 
