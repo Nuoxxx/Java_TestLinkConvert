@@ -27,11 +27,15 @@ import javax.swing.JTextField;
 /**
  * testlinkconvert的图形界面 Alt+shift+r 批量修改变量名
  */
-public class ConvertGui implements ActionListener {
 
+//实现ActionListener接口
+public class ConvertGui implements ActionListener {
+	//单行文本输入组件
 	JTextField jtext = new DropDragSupportTextArea(20);
 	FileDialog fd = null;
+	//基本容器
 	JFrame jf = null;
+	//按钮组件
 	JButton jb_ChooseFile = null;
 	JButton jb_XmlToExcel = null;
 	JButton jb_ExcelToXml = null;
@@ -44,11 +48,13 @@ public class ConvertGui implements ActionListener {
 		fd = new FileDialog(jf);
 		JPanel jp_file = new JPanel();
 		JPanel jp_transfer_ype = new JPanel();
+		//标签组件
 		JLabel jlable = new JLabel("源文件:");
 		// 三个按钮
 		jb_ChooseFile = new JButton("选择");
 		jb_XmlToExcel = new JButton("xml转成excel");
 		jb_ExcelToXml = new JButton("excel转成xml");
+		//注册事件监听器
 		jb_ChooseFile.addActionListener(this);
 		jb_XmlToExcel.addActionListener(this);
 		jb_ExcelToXml.addActionListener(this);
@@ -70,6 +76,7 @@ public class ConvertGui implements ActionListener {
 		jf.add(jp_transfer_ype);
 		jf.setLocation(300, 200);
 		jf.setVisible(true);
+		//根据组件自动调整窗体大小
 		jf.pack();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -78,7 +85,7 @@ public class ConvertGui implements ActionListener {
 		new ConvertGui();
 
 	}
-
+	//ActionListener接口处理按钮的动作事件，该接口只定义了一个方法
 	public void actionPerformed(ActionEvent e) {
 		String comm = e.getActionCommand();
 		if (comm.equals("选择")) {
@@ -94,6 +101,7 @@ public class ConvertGui implements ActionListener {
 						isExcelToXml = false;
 						jb_XmlToExcel.setEnabled(false);
 						jb_ChooseFile.setEnabled(false);
+						//启动多线程
 						new FileTransferTool(jtext, jb_ChooseFile, jb_XmlToExcel, jb_ExcelToXml, oldfilename,
 								isExcelToXml).start();
 					} else {
@@ -102,6 +110,7 @@ public class ConvertGui implements ActionListener {
 						isExcelToXml = true;
 						jb_ExcelToXml.setEnabled(false);
 						jb_ChooseFile.setEnabled(false);
+						//启动多线程
 						new FileTransferTool(jtext, jb_ChooseFile, jb_XmlToExcel, jb_ExcelToXml, oldfilename,
 								isExcelToXml).start();
 					}
